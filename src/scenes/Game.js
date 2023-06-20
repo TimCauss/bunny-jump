@@ -1,5 +1,8 @@
 import Phaser from "../lib/phaser.js";
 
+//import carot class:
+import Carrot from "../game/Carrot.js";
+
 export default class Game extends Phaser.Scene {
   constructor() {
     super("game");
@@ -14,6 +17,9 @@ export default class Game extends Phaser.Scene {
   /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
   cursors;
 
+  /** @type {Phaser.Physics.Arcade.Group} */
+  carrots;
+
   preload() {
     //Loading the background
     this.load.image("background", "assets/background/bg_layer1.png");
@@ -22,7 +28,8 @@ export default class Game extends Phaser.Scene {
     //loading player asset
     this.load.image("bunny-stand", "assets/player/bunny1_stand.png");
     //Loading carrot asset:
-    this.load.image('carrot', 'assets/carrot.png')
+    this.load.image("carrot", "assets/items/carrot.png");
+
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
@@ -58,6 +65,17 @@ export default class Game extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setDeadzone(this.scale.width * 1.5);
+
+    //Create Carrot
+    this.carrots = this.physics.add.group({
+      classType: Carrot,
+    });
+
+    //test Carrot:
+    // this.carrots.get(240, 320, "carrot");
+
+    // adding platforms vs Carrots collider
+    this.physics.add.collider(this.platforms, this.carrots);
   }
 
   update() {
@@ -104,5 +122,22 @@ export default class Game extends Phaser.Scene {
     } else if (sprite.x > gameWidth + halfWidth) {
       sprite.x = -halfWidth;
     }
+  }
+
+  /**
+   * @param {Phaser.GameObjects.Sprite} sprite
+   */
+  addCarrotAbove(sprite) {
+    const y = sprite.y - sprite.displayHeight;
+
+    /**@type {Phaser.Physics.Arcade.Sprite} */
+    const carrot = this.carrot.get(sprite.x, y, "carrot");
+
+    this.add.existing(carrot);
+
+    //update the physics body size:
+    carrot.body.setSize(carrot.width, carrot.height);
+
+    return carrot;
   }
 }
