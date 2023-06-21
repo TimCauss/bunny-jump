@@ -27,6 +27,7 @@ export default class Game extends Phaser.Scene {
   carrotsCollectedText;
 
   preload() {
+    //sprites/images:
     //Loading the background
     this.load.image("background", "assets/background/bg_layer1.png");
     //loading the platform image
@@ -36,6 +37,9 @@ export default class Game extends Phaser.Scene {
     this.load.image("bunny-jump", "assets/player/bunny1_jump.png");
     //Loading carrot asset:
     this.load.image("carrot", "assets/items/carrot_gold.png");
+
+    //sounds:
+    this.load.audio("jump", "assets/sfx/phaseJump1.ogg");
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }
@@ -137,6 +141,7 @@ export default class Game extends Phaser.Scene {
       //this makes the player jump straight up
       this.player.setVelocityY(-300);
       this.player.setTexture("bunny-jump");
+      this.sound.play("jump");
     } else {
       this.player.setVelocityX(0);
     }
