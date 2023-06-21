@@ -128,16 +128,14 @@ export default class Game extends Phaser.Scene {
     //is touching something below it
     const touchingDown = this.player.body.touching.down;
 
-    if (touchingDown) {
-      //this makes the player jump straight up
-      this.player.setVelocityY(-300);
-    }
-
     //input logic
     if (this.cursors.left.isDown && !touchingDown) {
       this.player.setVelocityX(-200);
     } else if (this.cursors.right.isDown && !touchingDown) {
       this.player.setVelocityX(200);
+    } else if (this.cursors.space.isDown && touchingDown) {
+      //this makes the player jump straight up
+      this.player.setVelocityY(-300);
     } else {
       this.player.setVelocityX(0);
     }
