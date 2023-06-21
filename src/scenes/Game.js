@@ -105,12 +105,11 @@ export default class Game extends Phaser.Scene {
       const carrot = child;
 
       const scrollY = this.cameras.main.scrollY;
-      if (carrot.y >= scrollY + 500) {
+      if (carrot.y >= scrollY + 700) {
         this.carrots.killAndHide(carrot);
         this.physics.world.disableBody(carrot.body);
       }
     });
-
 
     //find out from Arcade Physics if the player's physics body
     //is touching something below it
