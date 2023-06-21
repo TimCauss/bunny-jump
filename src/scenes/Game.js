@@ -33,7 +33,7 @@ export default class Game extends Phaser.Scene {
     this.load.image("platform", "assets/platform/ground_grass.png");
     //loading player asset
     this.load.image("bunny-stand", "assets/player/bunny1_stand.png");
-    this.load.image("bunner-jump", "assets/player/bunny1_jump.png");
+    this.load.image("bunny-jump", "assets/player/bunny1_jump.png");
     //Loading carrot asset:
     this.load.image("carrot", "assets/items/carrot_gold.png");
 
@@ -136,8 +136,14 @@ export default class Game extends Phaser.Scene {
     } else if (this.cursors.space.isDown && touchingDown) {
       //this makes the player jump straight up
       this.player.setVelocityY(-300);
+      this.player.setTexture("bunny-jump");
     } else {
       this.player.setVelocityX(0);
+    }
+
+    const vy = this.player.body.velocity.y;
+    if (vy > 0 && this.player.texture.key !== "bunny-stand") {
+      this.player.setTexture("bunny-stand");
     }
 
     this.horizontalWrap(this.player);
