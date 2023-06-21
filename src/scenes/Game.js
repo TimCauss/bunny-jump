@@ -8,6 +8,9 @@ export default class Game extends Phaser.Scene {
     super("game");
   }
 
+  init() {
+    this.carrotsCollected = 0;
+  }
   /** @type {Phaser.Physics.Arcade.Sprite} */
   player;
 
@@ -20,6 +23,9 @@ export default class Game extends Phaser.Scene {
   /** @type {Phaser.Physics.Arcade.Group} */
   carrots;
 
+  /** @type {Phaser.GameObjects.Text} */
+  carrotsCollectedText;
+
   preload() {
     //Loading the background
     this.load.image("background", "assets/background/bg_layer1.png");
@@ -27,8 +33,9 @@ export default class Game extends Phaser.Scene {
     this.load.image("platform", "assets/platform/ground_grass.png");
     //loading player asset
     this.load.image("bunny-stand", "assets/player/bunny1_stand.png");
+    this.load.image("bunner-jump", "assets/player/bunny1_jump.png");
     //Loading carrot asset:
-    this.load.image("carrot", "assets/items/carrot.png");
+    this.load.image("carrot", "assets/items/carrot_gold.png");
 
     this.cursors = this.input.keyboard.createCursorKeys();
   }
@@ -85,6 +92,12 @@ export default class Game extends Phaser.Scene {
       undefined,
       this
     );
+
+    const style = { color: "#000", fontSize: 24 };
+    this.carrotsCollectedText = this.add
+      .text(240, 10, "Carrots: 0", style)
+      .setScrollFactor(0)
+      .setOrigin(0.5, 0);
   }
 
   update() {
@@ -130,6 +143,11 @@ export default class Game extends Phaser.Scene {
     }
 
     this.horizontalWrap(this.player);
+
+    const bottomPlatform = this.findBottomMostPlatform();
+    if (this.player.y > bottomPlatform.y + 200) {
+      this.scene.start("game-over");
+    }
   }
 
   /**
@@ -179,5 +197,27 @@ export default class Game extends Phaser.Scene {
 
     //disable from physics world
     this.physics.world.disableBody(carrot.body);
+
+    this.carrotsCollected++;
+
+    //Create new text value and set it:
+    const value = `Carrots: ${this.carrotsCollected}`;
+    this.carrotsCollectedText.text = value;
+  }
+
+  findBottomMostPlatform() {
+    const platforms = this.platforms.getChildren();
+    let bottomPlatform = platforms[0];
+
+    for (let i = 1; i < platforms.length; ++i) {
+      const platform = platforms[i];
+
+      //discard any platforms that are above current
+      if (platform.y < bottomPlatform.y) {
+        continue;
+      }
+      bottomPlatform = platform;
+    }
+    return bottomPlatform;
   }
 }
